@@ -4,3 +4,4 @@ etc/mrtg.*
 etc/*.sample
 *.pyc
 !data/report/img/*
+var/*
