@@ -1,0 +1,16 @@
+ppc.*/
+ppc.*/
+ppc/
+development/
+test/
+**/[0-9][0-9]-Alpha/
+**/[0-9][-9]-Beta/
+**/test/
+/core/*
+source/**
+releases/1[1234567]/
+updates/1[1234567]/
+debug/*
+*debuginfo*.rpm
+SRPMS/
+updates/testing/*

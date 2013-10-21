@@ -1,0 +1,12 @@
+ia64/
+mips/
+mipsel/
+powerpc/
+s390/
+s390x/
+sparc/
+armel/
+armhf/
+kfreebsd-amd64/
+kfreebsd-i386/
+source/

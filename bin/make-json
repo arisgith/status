@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+. `dirname $0`/../lib/init.sh
+. $BASE/lib/common.sh
+
+NODE=$1
+
+if [ "$NODE" == "" ]; then
+	NODE=$HOST
+fi
+
+NODEDIR=$BASE/nodes/$NODE
+PKGS=$BASE/etc/report.pkgs
+PIDDIR=$BASE/var/run
+
+cat > $BASE/data/report/json/combine.json <<EOF
+{ "timestamp": "`date +%Y-%m-%dT%T%:z`"
+, "package": {
+EOF
+
+# end of .json need double }}
+
+grep -v '^\s*#' $PKGS | while read pkg
+	do
+	PKGDIR=$BASE/pkgs/$pkg
+	TARGET=`get_value "$PKGDIR/target"`
+	PKGNAME=`get_value "$PKGDIR/name"`
+	PKGHTTPLINK=`grep ^http "$PKGDIR/url"`
+	PKGFTPLINK=`grep ^ftp "$PKGDIR/url"`
+	PKGSRC=`get_value "$PKGDIR/source"`
+
+	if [ $pkg == "ubuntu-cd" ] ; then
+		
+	cat > $BASE/data/report/json/$pkg <<EOF
+ "$pkg" : { "id": "$pkg"
+  , "name": "$PKGNAME"
+  , "link":
+	[ { "rel":"HTTP", "href":"$PKGHTTPLINK" },
+	  { "rel":"FTP", "href":"$PKGFTPLINK"} ]
+  , "sync":
+	{ "source":"$PKGSRC" ,
+	  "status":"`grep msg $BASE/log/sync/$pkg/current/status.txt | sed 's/msg //'`",
+	  "last-sync":"`grep ^time $BASE/log/sync/$pkg/current/status.txt | sed 's/time //'`",
+	  "log":"/status/log/$pkg/current/sync.log",
+	  "size":"`cat $BASE/data/disk-usage/$pkg.du`"
+	}
+  }
+
+EOF
+	else
+	cat > $BASE/data/report/json/$pkg <<EOF
+ "$pkg" : { "id": "$pkg"
+  , "name": "$PKGNAME"
+  , "link":
+	[ { "rel":"HTTP", "href":"$PKGHTTPLINK" },
+	  { "rel":"FTP", "href":"$PKGFTPLINK"} ]
+  , "sync":
+	{ "source":"$PKGSRC" ,
+	  "status":"`grep msg $BASE/log/sync/$pkg/current/status.txt | sed 's/msg //'`",
+	  "lastsync":"`grep ^time $BASE/log/sync/$pkg/current/status.txt | sed 's/time //'`",
+	  "log":"/status/log/$pkg/current/sync.log",
+	  "size":"`cat $BASE/data/disk-usage/$pkg.du`"
+	}
+  }
+,
+EOF
+fi
+	cat $BASE/data/report/json/$pkg >> $BASE/data/report/json/combine.json
+	done
+cat >> $BASE/data/report/json/combine.json <<EOF
+ }
+}
+EOF

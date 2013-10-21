@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+. `dirname $0`/../lib/init.sh
+. $BASE/lib/common.sh
+
+NODE=$1
+
+if [ "$NODE" == "" ]; then
+	NODE=$HOST
+fi
+
+NODEDIR=$BASE/nodes/$NODE
+PKGS=$BASE/etc/report.pkgs
+DATADU=$BASE/data/disk-usage/
+
+mkdir -p $NODEDIR
+[ -f $PKGS ] || touch $PKGS
+
+grep -v '^\s*#' $PKGS | while read pkg
+do
+	echo $pkg
+	du -s -h `cat $BASE/pkgs/$pkg/target` | awk {'print$1'} > $DATADU/$pkg.du 
+done
+
+echo
+echo "### END SEDOT CRONTAB LIST"
+
+#exec 1>&3
+

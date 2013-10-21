@@ -35,5 +35,5 @@ if [ $DRYRUN == "1" ]; then
 fi
 
 echo 1 > $STEPFILE
-debmirror -v --passive --host=$SOURCE $ROOT $METHOD $DIST $SECTION $ARCH $DRYRUNOPT --ignore-release-gpg --ignore-missing-release $TARGET
+debmirror -v --passive --host=$SOURCE $ROOT $METHOD $DIST $SECTION $ARCH $DRYRUNOPT --ignore-release-gpg --ignore-missing-release --rsync-extra=none $TARGET
 

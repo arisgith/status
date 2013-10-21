@@ -220,7 +220,7 @@ if [ "$RET" -ne "0" ]; then
 	tail -n 50 $LOG > $LOG.last.txt
 fi
 
-gzip -9 $LOG
+gzip -9 -c $LOG > "$LOG.gz"
 
 #
 # Call plugins

@@ -1,0 +1,2 @@
+#!/bin/bash
+exec ~/bin/ftpsync sync:archive:debian-security
